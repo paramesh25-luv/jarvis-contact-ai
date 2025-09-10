@@ -1,36 +1,37 @@
 from flask import Flask, request, jsonify
-import secrets, time
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # allows frontend to call this backend
 
-# Temporary in-memory store
-temp_links = {}
+# Example: secure answer
+SECRET_ANSWER = "uce tindivanam"
 
 @app.route("/api/request_contact", methods=["POST"])
 def request_contact():
-    data = request.json
-    handle = data.get("handle")
-    answer = data.get("answer")
+    try:
+        data = request.get_json()
+        instagram = data.get("instagram", "").strip()
+        answer = data.get("answer", "").strip().lower()
 
-    if answer.lower().strip() == "anna university":
-        token = secrets.token_urlsafe(8)
-        expiry = time.time() + 86400  # valid 24 hours
-        temp_links[token] = {"contact": "paramesh@example.com", "expiry": expiry}
-        return jsonify({"status": "verified", "link": f"/api/get_contact/{token}"})
-    else:
-        return jsonify({"status": "failed", "message": "Verification failed"})
+        # Check the security question
+        if answer == SECRET_ANSWER:
+            return jsonify({
+                "message": f"Access granted for {instagram} ✅",
+                "contacts": {
+                    "email": "paramesh@example.com",
+                    "linkedin": "https://linkedin.com/in/paramesh",
+                    "github": "https://github.com/paramesh25-luv",
+                    "instagram": "_p_a_r_a_m_e_s_h_25_"
+                }
+            }), 200
+        else:
+            return jsonify({
+                "error": "Incorrect answer. Access denied ❌"
+            }), 401
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-@app.route("/api/get_contact/<token>", methods=["GET"])
-def get_contact(token):
-    record = temp_links.get(token)
-    if record and record["expiry"] > time.time():
-        return jsonify({"email": record["contact"]})
-    else:
-        return jsonify({"error": "Link expired or invalid"})
-
-@app.route("/", methods=["GET"])
-def home():
-    return {"message": "Jarvis Contact API Running 🚀"}
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
