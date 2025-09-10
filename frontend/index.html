@@ -1,22 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Jarvis Contact Portal</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jarvis: Secure Contact Portal</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="chatbox">
+  <div class="container">
     <h2>🤖 Jarvis: Secure Contact Portal</h2>
     <p>Enter your Instagram handle and answer the question:</p>
-    
     <form id="contactForm">
-      <input type="text" id="handle" placeholder="Instagram handle" required><br>
-      <input type="text" id="answer" placeholder="Where does Paramesh study?" required><br>
+      <input id="instagram" type="text" placeholder="Instagram handle" required />
+      <input id="answer" type="text" placeholder="Where does Paramesh study?" required />
       <button type="submit">Verify</button>
     </form>
-
-    <div id="result"></div>
+    <div id="response"></div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
